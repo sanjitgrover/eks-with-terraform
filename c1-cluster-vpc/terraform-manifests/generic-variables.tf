@@ -8,7 +8,7 @@ variable "environment" {
     default = "dev"
 }
 
-variable "owner" {
+variable "business_division" {
     type = string
     default = "HR"
 }
