@@ -13,7 +13,7 @@ module "vpc" {
   name = "${local.name}-${var.vpc_name}"
   cidr = var.vpc_cidr
 
-  azs                 = data.aws_availability_zones.available
+  azs                 = data.aws_availability_zones.available.names
   private_subnets     = var.vpc_private_subnets
   public_subnets      = var.vpc_public_subnets
   database_subnets    = var.vpc_db_subnets
@@ -29,7 +29,24 @@ module "vpc" {
   single_nat_gateway = var.single_nat_gateway
 
  
-  tags = local.tags
+  tags = local.common_tags
+  vpc_tags = local.common_tags
+  
+  public_subnet_tags = {
+    Type = "Public Subnets"
+    "kubernetes.io/role/elb" = 1
+    "kubernetes.io/cluster/${local.eks_cluster_name}" = "shared"
+  }
+  
+  private_subnet_tags = {
+    Type = "Private Subnets"
+    "kubernetes.io/role/internal-elb" = 1
+    "kubernetes.io/cluster/${local.eks_cluster_name}" = "shared"
+  }
+  
+  database_subnet_tags = {
+    Type = "Database Subnets"
+  }
 }
 
 
