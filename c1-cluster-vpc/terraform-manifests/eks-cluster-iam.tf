@@ -1,7 +1,7 @@
 resource "aws_iam_role" "eks_master_role" {
     name = "${local.name}-eks-master-role"
     
-    assume_role_policy = <<POLICY 
+    assume_role_policy = jsonencode( 
     {
        "Version": "2012-10-17",
         "Statement": [
@@ -16,7 +16,7 @@ resource "aws_iam_role" "eks_master_role" {
     
     
     }
-    POLICY
+    )
 }
 
 # Associate IAM Policy to IAM Role

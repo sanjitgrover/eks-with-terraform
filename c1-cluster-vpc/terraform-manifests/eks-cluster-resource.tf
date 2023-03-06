@@ -26,7 +26,3 @@ resource "aws_eks_cluster" "eks_cluster" {
   ]
 }
 
-output "endpoint" {
-  value = aws_eks_cluster.example.endpoint
-}
-
