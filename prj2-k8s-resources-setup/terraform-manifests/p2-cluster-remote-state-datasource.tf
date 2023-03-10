@@ -1,7 +1,13 @@
 data "terraform_remote_state" "eks" {
-  backend = "local"
+  # backend = "local"
+  # config = {
+  #   path = "../../prj1-eks-cluster-on-vpc/terraform-manifests/terraform.tfstate"
+  # }
+  backend="s3"
   config = {
-    path = "../../prj1-eks-cluster-on-vpc/terraform-manifests/terraform.tfstate"
+    bucket="terraform-on-eks-sanjit"
+      key="dev/eks-cluster/terraform.tfstate"
+      region="us-east-1"
   }
 }
 
