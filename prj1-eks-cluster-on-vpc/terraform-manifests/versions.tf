@@ -8,11 +8,11 @@ terraform {
   }
   
   backend "s3" {
-      bucket="terraform-on-eks-sanjit"
-      key="dev/eks-cluster/terraform.tfstate"
+      bucket=data.terraform_local_state.bucket.outputs.bucket_name.value
+      key="${data.terraform_local_state.bucket.outputs.cluster_folder.value}/terraform.tfstate"
       region="us-east-1"
       
-      dynamodb_table="dev-ekscluster"
+      dynamodb_table=data.terraform_local_state.bucket.outputs.cluster_table.value
     }
 }
 

@@ -1,3 +1,11 @@
+data "terraform_remote_state" "bucket" {
+   backend = "local"
+   config = {
+     path = "../../initial-backend-setup/terraform-manifests/terraform.tfstate"
+   }
+  
+}
+
 data "terraform_remote_state" "eks" {
   # backend = "local"
   # config = {
@@ -5,8 +13,8 @@ data "terraform_remote_state" "eks" {
   # }
   backend="s3"
   config = {
-    bucket="terraform-on-eks-sanjit"
-      key="dev/eks-cluster/terraform.tfstate"
+    bucket=data.terraform_local_state.bucket.outputs.bucket_name.value
+      key="${data.terraform_local_state.bucket.outputs.cluster_folder.value}/terraform.tfstate"
       region="us-east-1"
   }
 }
