@@ -64,7 +64,7 @@ output "node_group_public_version" {
   value       = aws_eks_node_group.eks_ng_public.version
 }
 
-# EKS Node Group Outputs - Private
+# EKS Node Group Outputs - Private, Uncomment for Private Nodegroup
 /*
 output "node_group_private_id" {
   description = "Node Group 1 ID"
