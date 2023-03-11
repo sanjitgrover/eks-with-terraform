@@ -8,7 +8,7 @@ resource "aws_iam_openid_connect_provider" "oidc_provider" {
   thumbprint_list = [var.eks_oidc_root_ca_thumbprint]
   
   tags = merge (
-  Name = "${var.cluster_name}-eks-irsa"
+  {Name = "${var.cluster_name}-eks-irsa"},
   local.common_tags,
   
   )
