@@ -32,13 +32,13 @@ module "s3-bucket" {
 
 resource "aws_s3_object" "cluster" {
   bucket       = module.s3-bucket.s3_bucket_id
-  key          = "dev/${var.object_list[0]}"
+  key          = "dev/${var.object_list[0]}/"
   content_type = "application/x-directory"
 }
 
 resource "aws_s3_object" "k8s" {
   bucket       = module.s3-bucket.s3_bucket_id
-  key          = "dev/${var.object_list[1]}"
+  key          = "dev/${var.object_list[1]}/"
   content_type = "application/x-directory"
 }
 
