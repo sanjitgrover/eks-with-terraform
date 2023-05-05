@@ -1,0 +1,790 @@
+EKS Related documentation
+https://docs.aws.amazon.com/eks/latest/userguide/install-kubectl.html
+https://developer.hashicorp.com/terraform/tutorials/kubernetes/eks
+
+LATEST AWSCLI Installation
+https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html
+
+ALB INGRESS CONTROLLER
+https://kubernetes-sigs.github.io/aws-load-balancer-controller/v1.1/
+
+ANNOTATIONS DOCUMENTATION
+kubernetes-sigs.github.io/aws-load-balancer-controller/v2.3/guide/ingress/annotations/#annotations
+
+HOW ALB INGRESS WORKS
+https://kubernetes-sigs.github.io/aws-alb-ingress-controller/guide/controller/how-it-works/
+
+
+Daida Resources
+AWS EKS Kubernetes - Masterclass
+https://github.com/stacksimplify/aws-eks-kubernetes-masterclass
+
+https://github.com/stacksimplify/terraform-on-aws-eks
+
+Docker Fundamentals
+https://github.com/stacksimplify/docker-fundamentals
+
+Kubernetes Fundamentals
+https://github.com/stacksimplify/kubernetes-fundamentals
+
+Acloudguru Resources
+sudo yum install -y git
+git clone https://github.com/ACloudGuru-Resources/Course_EKS-Basics
+https://github.com/ACloudGuru-Resources/Course_Practical_Guide_EKS
+
+Sanjit's EKS Repo
+git clone https://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@github.com/sanjitgrover/eks-with-terraform.git
+
+
+
+-------------------***************************--------------------------
+STEPS FOR SETUP TERRAFORM DEVELOPMENT ENVIRONMENT ON CLOUD9 (ACLOUDGURU ENV)
+
+1.Setup and import terraform-key.pem from git repo to Key-pairs at EC2 Dashboard using the following commands:
+chmod 400 eks-with-terraform/c1-cluster-vpc/terraform-manifests/private/terraform-key.pem
+ssh-keygen -y -f eks-with-terraform/c1-cluster-vpc/terraform-manifests/private/terraform-key.pem
+
+ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCtJVxIopxge5PDC3C8XgN1MWhyU6H2FoMW4DdzaisXbW01eTh2N+dq3iY7shOgUDlBgTkMAHAc5k7OFThyaiMbYmnbbE8l6djBLuNceA8gzHoNQTJZL0Z8l+exNgRwoYcoP7ZZU+4Ddp4vT9oP7zyNONQ6vx+APNrhVSOAunN+eAAsD4+0I1ySM5uVE8kBWAkuZog3vnkurh9MI7MM5yzxwbuQiVOcSd1KyO4EExAehc0cJYbboMZj2LMUIxZEjJZFbjms1tB6i4lgus687PQN9T0BlIJxoAN5k0+oZZ+KwBOkNG4xbRoJxgoUSqb3IpQhTBliIl4DTvQhN89ML0BV
+
+
+2.Copy AWS secret id and key from acloudguru dashboard aws startup to the cloud9 terminal using aws configure as Cloud9 credentials are temporary and setting up IAM roles, users is not working with them
+
+3.Install kubectl and eksctl from the below setup
+-------------------***************************--------------------------
+!@!@#$#%#% VVVVVVVVVVV IMPORTANTTT - DONT USE CLOUD9 for KUBECTL, it will never work!!!
+
+GEMERAL SETUP USING DAIDA's INSTRUCTIONS
+AWS CLI to latest version
+2.xx
+
+------ Kubectl installation ------
+https://docs.aws.amazon.com/eks/latest/userguide/install-kubectl.html
+
+**Using 1.24 version right now
+curl -O https://s3.us-west-2.amazonaws.com/amazon-eks/1.24.10/2023-01-30/bin/linux/amd64/kubectl
+if error then
+curl -O https://s3.us-west-2.amazonaws.com/amazon-eks/1.23.15/2023-01-11/bin/linux/amd64/kubectl
+
+
+chmod +x kubectl
+
+mkdir -p $HOME/bin && cp ./kubectl $HOME/bin/kubectl && export PATH=$PATH:$HOME/bin
+
+kubectl version --short
+
+%%$%$Error Case $%$%$%%$%$
+mv kubectl kubectl_1.24
+mv bin bin_1.24 
+curl -O https://s3.us-west-2.amazonaws.com/amazon-eks/1.23.15/2023-01-11/bin/linux/amd64/kubectl
+chmod +x ./kubectl
+mkdir -p $HOME/bin && cp ./kubectl $HOME/bin/kubectl && export PATH=$PATH:$HOME/bin
+kubectl version
+In conclusion, the error message “error: exec plugin: invalid apiVersion client.authentication.k8s.io/v1alpha1” occurs when the kubectl the version you are using is incompatible with the API version of your Kubernetes cluster. To resolve this error, you can upgrade your kubectl version, update your resource definition files, or upgrade your Kubernetes cluster to ensure compatibility.
+------ Kubectl installation ends ------
+
+------ Eksctl installation ------
+curl --silent --location "https://github.com/weaveworks/eksctl/releases/latest/download/eksctl_$(uname -s)_amd64.tar.gz" | tar xz -C /tmp
+sudo mv /tmp/eksctl /usr/bin
+
+eksctl version
+
+Attach EKS cluster
+aws eks update-kubeconfig --name IT-stage-eks_demo_1 --region us-east-1
+
+eksctl get cluster
+
+------ Eksctl installation ends ------
+
+
+
+*************__________________***************
+!@!@#$#%#% VVVVVVVVVVV IMPORTANTTT - DONT USE CLOUD9 for KUBECTL, it will never work!!!
+Setup using ACLOUDGURU tutorial:
+- Create user with administrator access and generate Access keys
+AKIASNCYRD3E2BONCW6K
+8iHLft8zz3hRXo5CJPjX1suUAN2xxpAxQEJodmo6
+
+Install AWS CLI 
+curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+unzip awscliv2.zip
+sudo ./aws/install
+which aws
+/usr/bin/aws
+sudo ./aws/install --bin-dir /usr/bin --install-dir /usr/bin/aws-cli --update 
+aws --version
+
+aws configure with administrator access
+
+curl -O https://s3.us-west-2.amazonaws.com/amazon-eks/1.23.16/2023-01-30/bin/linux/amd64/kubectl
+
+chmod +x ./kubectl
+mkdir -p $HOME/bin && cp ./kubectl $HOME/bin/kubectl && export PATH=$PATH:$HOME/bin
+kubectl version  --short
+
+LATEST KUBECTL
+$ curl -LO https://storage.googleapis.com/kubernetes-release/release/`curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt`/bin/linux/amd64/kubectl$ chmod +x ./kubectl$ sudo mv ./kubectl /usr/local/bin/kubectl
+
+curl --silent --location "https://github.com/weaveworks/eksctl/releases/latest/download/eksctl_$(uname -s)_amd64.tar.gz" | tar xz -C /tmp
+
+sudo mv /tmp/eksctl /usr/bin
+
+eksctl version
+
+eksctl create cluster --name dev --region us-east-1 --nodegroup-name standard-workers --node-type t2.medium --nodes 2 --nodes-min 1 --nodes-max 3 --managed
+
+eksctl create cluster --name dev --region us-east-1 --zones us-east-1a,us-east-1b,us-east-1d --nodegroup-name standard-workers --node-type t3.medium --nodes 2 --nodes-min 1 --nodes-max 3 --managed
+
+aws eks update-kubeconfig --name dev-cluster --region us-east-1
+
+*************__________________***************
+EKS CLuster:
+- EKS Control Plane
+- Node Groups and Worker Nodes
+- Fargate Profiles (Serverless)
+- VPC
+
+CREATE EKS CLUSTER
+- Without Node Group
+eksctl create cluster --name=eksdemo1 --region=us-east-1 --zones=us-east-1a,us-east-1b --without-nodegroup
+
+- With Node Group
+eksctl create cluster --name=dev-cluster --region=us-east-1 --nodegroup-name standard-workers --node-type t2.medium --nodes 3 --nodes-min 1 --nodes-max 4 --managed 
+
+eksctl get cluster
+aws eks update-kubeconfig --name eksdemo1 --region us-east-1
+
+kubectl config view - if apiVersion: client.authentication.k8s.io/v1alpha1, then run 
+aws eks --region us-east-1 update-kubeconfig --name eksdemo1 
+to update it to beta1
+
+
+**ERROR creating Clientset: getting list of API resources for raw REST client: Unauthorized or 
+invalid apiVersion "client.authentication.k8s.io/v1alpha1"
+aws eks --region us-east-1 update-kubeconfig --name dev --role-arn arn:aws:iam::942359181212:role/eksctl-eksdemo1-cluster-ServiceRole-1EYFK21FVDHW7
+
+After creating cluster:
+kubectl get nodes
+
+To enable and use AWS IAM roles for K8S Service Accounts on EKS cluster, we need to create and
+associate OIDC (Open ID Connect) Provider:
+eksctl utils associate-iam-oidc-provider --region us-east-1 --cluster eksdemo1 --approve
+
+Help on eksctl
+eksctl create nodegroup --help
+Addons flags:
+      --asg-access               enable IAM policy for cluster-autoscaler
+      --external-dns-access      enable IAM policy for external-dns
+      --full-ecr-access          enable full access to ECR
+      --appmesh-access           enable full access to AppMesh
+      --appmesh-preview-access   enable full access to AppMesh Preview
+      --alb-ingress-access       enable full access for alb-ingress-controller
+      --install-neuron-plugin    install Neuron plugin for Inferentia and Trainium nodes (default true)
+      --install-nvidia-plugin    install Nvidia plugin for GPU nodes (default true)
+
+Create EC2 key pair to access worker nodes = terraform-key.pem
+
+Create Nodegroup:
+eksctl create nodegroup --cluster=eksdemo1  --region=us-east-1 --name=eks-demo1-ng-public1 --node-type=t2.medium   \
+--nodes=2 --nodes-min=2  --nodes-max=4  --node-volume-size=20  --ssh-access --ssh-public-key=terraform-key   \
+--managed   --asg-access  --external-dns-access   --full-ecr-access  --appmesh-preview-access --alb-ingress-access
+
+Add --node-private-networking to create Node Group in a private subnet
+
+Check Nodes with their IP addresses
+kubectl get nodes -o wide
+
+Check that Nodes have public access:
+EKS Service -> CLuster -> Networking -> Click Subnet -> Check subnet ID -> View Route Table tab
+We should see that internet route via Internet Gateway(0.0.0.0/0 -> igw-xxxxxxx)
+*If it is private node group, then we could see internet route via NAT Gateway(0.0.0.0/0 -> nat-xxxxxxx)
+
+
+Get Nodegroups under cluster:
+eksctl get nodegroup --cluster=eksdemo1 
+
+eksctl delete nodegroup <nodegroupname> --cluster=clustername
+
+Get kubectl context
+kubectl config view --minify
+
+Check the IAM Role on Worker Nodes EC2 and they should have 9 policies attached
+
+Set the Worker Nodes' Security Groups to allow all traffic
+
+****EKS Cluster SETUP COMPLETE HERE*********
+
+
+All kubernetes documentation is at: 
+kubernetes.io
+
+1.Create Pod using a docker image
+kubectl run my-first-pod --image stacksimplify/kubenginx:1.0.0
+
+2*.Get all the objects present in the default namespace
+kubectl get all
+
+2.List Pods  (use -o wide for full info)
+kubectl get pods 
+or
+kubectl get po 
+
+2.1.Check pods in watch mode
+k get po -w
+
+2.Check Pod creation/current info
+kubectl describe pod my-first-pod
+
+3.Delete pods
+kubectl delete pod my-first-pod
+
+3*.Delete service
+kubectl delete service my-first-service
+
+4.Expose pod as service
+kubectl expose pod my-first-pod --type=NodePort --port=80 --name=my-first-service
+
+5.Get Sevice
+kubectl get service
+or 
+kubectl get svc
+NAME               TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)        AGE
+kubernetes         ClusterIP   10.100.0.1       <none>        443/TCP        107m
+my-first-service   NodePort    10.100.133.153   <none>        80:32298/TCP   39s
+
+6.Run application
+Using    kubectl get nodes -o wide
+pick the external IP address
+52.90.121.173
+Add the NodePort - 32298
+Access -  52.90.121.173/32298
+
+7.Expose Pod as service on a different port
+kubectl expose pod my-first-pod --type=NodePort --port=80 --target-port=81 --name=my-first-service2
+
+
+8.Logging and Live logging
+kubectl logs my-first pod
+and 
+kubectl logs -f my-first-pod
+
+9.Connect to a container in the Pod
+kubectl exec -it my-first-pod -- /bin/bash
+
+10.Connect to container from outside, eg. checking env var 
+kubectl exec -it my-first-pod env
+
+11.Get Yaml output of Pod and service
+kubectl get pod my-first-pod -o yaml
+
+kubectl get service my-first-service -o yaml
+
+12.replicaset Yaml
+apiVersion: apps/v1
+kind: ReplicaSet
+metadata:
+  name: my-replicas
+  labels:
+    app: my-app
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: my-app
+  template:
+    metadata:
+      labels:
+        app: my-app
+    spec:
+      containers:
+      - name: my-app-cnt
+        image: stacksimplify/kube-helloworld:1.0.0
+
+13.Create Replica Set
+kubectl create -f replicaset.yaml	
+
+
+14.Get all the replica sets
+kubectl get replicaset 
+or 
+kubectl get rs
+
+15.Get Owner's name of Pod
+kubectl get pods my-first-pod -o yml
+check: ownerReferences
+
+16.Expose Replica set as service
+kubectl expose rs --type=NodePort --port=80 --target-port=8080 --name=my-app-service
+
+17.Create deployment
+kubectl create deployment my-first-deployment --image=stacksimplify/kube-helloworld:1.0.0
+
+18.Check deployments
+kubectl get deployments
+
+kubectl describe deployment my-first-deployment
+
+19.Scale up/down replicassets using deployments
+kubectl scale --replicas=10 deployment my-first-deployment  
+
+20.Expose deployment as service
+kubectl expose deploy --type=NodePort --port=80 --target-port=80 --name=my-first-deployment
+
+21.Update deployments using Set Image
+First, get container name from current deployment
+kubectl get deployment my-first-deployment -o yaml  
+container-name=kubenginx
+
+kubectl set image deployment/my-first-deployment kubenginx=stacksimplify/kubenginx.2.0.0 --records=true
+records=true to enable versioning
+
+22.Check deployment update status
+kubectl rollout status deployment/my-first-deployment
+
+23.Update deployments using Edit deployment
+kubectl edit deployment/my-first-deployment --records=true
+
+Now, change spec.containers.image 
+
+Check status using rollout status command
+
+23.Check Deployment History
+kubectl rollout history deployment my-first-deployment
+Add --revision=<no.> to go to specific 
+
+24.Rollback to a previous version
+kubectl rollback undo deployment/my-first-deployment
+
+25.To undo rollback to a specific version
+kubectl  rollback undo deployment/my-first-deployment --to-revision=3
+
+26.Restart all pods
+kubectl rollout restart deployment/my-first-deployment
+
+27.Pause/Resume deployment
+kubectl rollout pause deployment/my-first-deployment
+
+kubectl rollout resume deployment/my-first-deployment
+All updates put in waiting during pause and done on resume.
+
+28.Update CPU and memory for the deployment
+kubectl set resources deployment/my-first-deployment -c=kubenginx --limits=cpu=200m,memory=500Mi
+
+29.Do Cleanup in this order:
+delete deploy
+delete svc
+
+30.1.Three Types of Storage (Persistent Volumes) available with EKS
+1.EBS CSI (Container Storage Interface)
+2.EFS CSI
+3.FSx for Lustre (Windows based)
+
+https://github.com/stacksimplify/aws-eks-kubernetes-masterclass/tree/master/04-EKS-Storage-with-EBS-ElasticBlockStore
+
+30.Attach EBS Volumes to worker nodes
+Worker Node Role should have the policy to work with EBS
+ 
+Create IAM policy-EBS_CSI_DRIVER with EC2 permissions: DESCRIBE(Instances, Snapshots, Volumes), TAGS(Read, Creat, Delete), VOLUME(ATTACH, DETACH, CREATE, DELETE), SNAPSHOT(Create, Delete)
+
+Get Worker Node IAM role ARN, either from a)EKS cluster or b)EC2 Worker Node
+a)kubectl -n kube-system describe configmap aws-auth
+b)EC2 Dashboard -> Role ARN
+
+Attach EBS_CSI_DRIVER policy to the Worker Node IAM role
+
+Install EBS Driver on EKS Cluster
+- kubectl apply -k "github.com/kubernetes-sigs/aws-ebs-csi-driver/deploy/kubernetes/overlays/stable/?ref=master"
+
+Check that EBS volume has been added
+- kubectl get pods -n kube-system
+It should show ebs-csi-controller pods
+
+Requirements for MySQL DB with persistent Storage:
+https://github.com/stacksimplify/aws-eks-kubernetes-masterclass/tree/master/04-EKS-Storage-with-EBS-ElasticBlockStore/04-02-SC-PVC-ConfigMap-MySQL
+- Storage Class (Use WaitForFirstConsumer - to allow PV in same AZ as the Pod)
+- Persistent Volume Claim
+- ConfigMap - Configuration to be mounted to the container i.e.  DB - usemgmt
+- Deployment, Environment Variables, Volumes, VolumeMounts
+- ClusterIP Service
+
+31.Create configMap.yml  - It creates a database named usermgmt
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: usermanagement-dbcreate-script
+data:
+  mysql_usermgmt.sql: |-
+    DROP DATABASE IF EXISTS usermgmt;
+    CREATE DATABASE usermgmt;
+
+32.To run multiple yml files at once, create folder and all your yaml to it
+kubectl apply -f kube-manifests/
+
+33.Search Pods using label
+kubectl get pods -l app=mysql
+
+34.Connect to the created Mysql Pod
+kubectl run -it --rm --image=mysql:5.6 --restart=Never mysql-client -- mysql -h mysql -pdbpassword11
+
+35.Handle waiting of mysql pod creation using init-creation
+to wait for mysql-pod creation, the microservice pod spec should have initContainers section
+initContainers:
+  - name:
+    image: busybox:1.31
+    command: wait for mysql pod to come up
+
+36.Probes
+Liveness Probe
+Readiness Probe
+Startup Probe
+
+Define Probes using the following options in the Containers section:
+Commands - /bin/sh -c nc -z localhost 8095
+HTTP GET Request  - httpget path:/health-status
+TCP - tcpSocket Port: 8095
+
+37. Requests and Limits for Containers
+requests = min assigned cpu and memory
+Limits = max cpu and memory that container can use
+
+1000m=1cpu core
+128Mi = 135MB
+
+38.Namespaces - Virtual Clusters
+kubectl get namespaces
+kubectl get all --namespace kube-system
+
+39.Create namespaces
+kubectl create namespace dev1
+
+40.Deployment in a specific namespace
+kubectl apply -f kube-manifests/ -n dev1
+
+41.ResourceQuota - Max No. of pods and CPU, memory for each container
+kubectl describe quota
+
+41aa.K8S Application with MySQL Pod with EBS exposed to Cluster IP Service has drawbacks:
+1)Complex Setup to achieve High Availability - Using StatefulSets and multiple Read Replicas
+2)Complex multi-az support for EBS used as PV for MySQL DB
+3)No Automatic Backup and Recovery
+4)No Autoupgrade for MySQL
+
+41bb.So Amazon RDS should be used using ExternalName Service. Required K8S objects for FrontEnd App:
+- NodePort Service
+- Deployment
+- Env variables
+- ExternalName Service for RDS 
+
+
+AWS Application Load Balancer supports: 
+a.Path Based Routing - /app1, /app2 etc
+b.Route Based Routing - app.kubecloud.com, admin.kubecloud.com
+c.Routing based on fields in the request - HTTP headers, HTTP methods, Query Parameters and Source IP Address
+d.Supports Redirect of Request from one URL to another
+e.Supports returning a custom HTTP response
+f.Supports registering Lambda functions as targets
+g.Supports user authentication using social identities before routing requests
+h.Supports containerized application (ECS) by default
+i.Supports monitoring Health of each service independently as health checks are defined at target group level
+j.Supports registering IP address as targets including targets outside the VPC of Load Balancer
+
+By default, K8S LoadBalancer service will create Classic Load Balancer
+Which annotation is required for a Network Load Balancer
+annotations:
+  service.beta.kubernetes.io/aws-load-balancer-type: nlb
+Now, it is nlb-ip or external
+Preferred type is external
+
+**Check documentation for annotations:
+https://kubernetes-sigs.github.io/aws-alb-ingress-controller/ - v1
+https://github.com/kubernetes-sigs/aws-load-balancer-controller - v2
+
+
+42.What does AWS Load Balancer Controller (earlier name-ALB Ingress Controller)(1.22 onwards) do
+It triggers 
+- the creation of an Application Load Balancer and required AWS resources when Ingress Resource is created on the K8S cluster using annotation: 
+  kubernetes.io/ingress.class: alb
+- the creation of Network Load Balancer and required AWS resources when Service Resource is created on the K8S cluster using annotation:
+  kubernetes.io/ingress.class: nlb (legacy) now external or nlb-ip
+
+42.1.Reiterating, AWS Load Balancer Controller has two versions
+K8s Ingress Resource - AWS Application Load Balancer
+K8s Service Resource - AWS Network Load Balancer
+
+43.AWS Load Balancer Controller (earlier name-ALB Ingress Controller) supports two traffic modes
+Instance - Register nodes as targets.
+         - Traffic reaching ALB is routed to NodePort of the service and then proxied to pods
+	 - default mode or alb.ingress.kubernetes.io/target-type:instance
+	 - Mainly used with managed Nodegroups 
+
+IP Mode  - Register pods as targets.
+	 - Traffic reaching ALB is routed to pods of the service
+	 - alb.ingress.kubernetes.io/target-type: ip
+  	 - Mainly used with serverless like Fargate where nodegroups are not managed
+	 - can also be used with nodegroups
+
+HOW ALB INGRESS WORKS
+https://kubernetes-sigs.github.io/aws-alb-ingress-controller/guide/controller/how-it-works/
+
+
+44.Steps for installing AWS Load Balancer Controller (LBC):
+- Create IAM Policy to CRUD the AWS ALB and note the ARN
+Further in kube-system namespace, these resources are created: 
+- Create IAM Role on that policy and annotate it with K8S Service Account for AWS LBC
+- LBC will be created using deployment which creates
+  - Pods related to LBC
+  - LBC Webhook clusterIP service
+  - aws-load-balancer-tls secret
+- LBC on receiving Ingress-k8s manifest, will create
+  - AWS ELB
+  - Corresponding Ingress Resource in the cluster 
+- Install AWS Load Balancer Controller using HELM3 CLI
+- Create a default Ingress Class
+
+45.Requirements for using ALB Ingress Conroller
+- eksctl version
+- kubectl version --short (Shows Both client and server version, diff should be 1 minor version)
+- Create EKS Cluster 
+- Create Nodegroup in Private Subnets
+- Associate IAM OIDC Provider
+- eksctl get cluster
+- eksctl get nodegroup --cluster=eksdemo1
+- eksctl get iamserviceaccount --cluster=eksdemo1
+
+- Check that kubeconfig is created:
+  cat $HOME/.kube/config
+- If 'get cluster' command does not return any information, update kubeconfig
+  aws eks --region us-east-1 update-kubeconfig --name eksdemo1
+
+- Download latest IAM policy to operate ALB Controller
+curl -o iam_policy_latest.json     https://raw.githubusercontent.com/kubernetes-sigs/aws-load-balancer-controller/main/docs/install/iam_policy.json
+
+- Create IAM policy using policy download
+aws iam create-policy   --policy-name AWSLoadBalancerControllerIAMPolicy    --policy-document file://iam_policy.json
+**Note down the ALBCPolicy ARN
+
+
+
+- Check for Service Account in kube-system
+  kubectl get sa -n kube-system   
+	or
+ kubectl get sa aws-load-balancer-controller -n kube-system
+
+- Create Service Account in kube-system
+eksctl create iamserviceaccount 
+	--cluster-name=my_cluster 
+      	--namespace=kube-system --name=aws-load-balancer-controller   \
+	--attach-policy-arn=arn:<ALBCPolicy ARN>  \
+	--override-existing-serviceaccounts   \
+	--approve
+
+- Check for service account at cluster level
+eksctl get iamserviceaccount --cluster=eksdemo1
+
+- Check for Service Account in kube-system
+  kubectl get sa aws-load-balancer-controller -n kube-system
+  kubectl describe sa aws-load-balancer-controller -n kube-system
+Check that role annotation for SA is similar to the IAM Role arn
+
+- Cloudformation can also be checked for iamserviceaccount creation
+
+- Install helm to configure ALB Ingress Controller
+Go to docs.aws.amazon.com/eks/latest/userguide/helm.html
+
+for Linux,
+curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 > get_helm.sh
+chmod 700 get_helm.sh
+./get_helm.sh
+
+- helm version
+
+- While installing to EC2 with restricted access to EC2 metadata service, or deploying to Fargate, add flags:
+	--set region=region-code
+	--set vpcId=vpc-xxxxxxxx
+
+- While installing to region other than us-west-2, add flag:
+	--set image.repository=<<account.dkr.ecr.region-code.amazonaws.com>>/amazon/aws-load-balancer-controller
+Get the image account from:
+docs.aws.amazon.com/eks/latest/userguide/add-ons-images.html
+
+- Add eks-charts repository
+helm repo add eks https://aws.github.io/eks-charts
+helm repo update
+
+- Install aws load balancer
+helm install aws-load-balancer-controller eks/aws-load-balancer-controller   \
+-n kube-system   \
+--set clusterName=eksdemo1   \
+--set serviceAccount.create=false   \
+--set serviceAccount.name=aws-load-balancer-controller    \
+--set region=us-east-1  \
+--set vpcId=vpc-	\
+--set image.repository=<<account.dkr.ecr.region-code.amazonaws.com>>/amazon/aws-load-balancer-controller
+Check for STATUS: deployed as Success message
+
+- Verify that AWS load balancer is installed
+kubectl -n kube-system get deployment 
+kubectl -n kube-system get deployment aws-load-balancer-controller
+kubectl -n kube-system describe deployment aws-load-balancer-controller
+
+- Verify that Webhook service is created, matching(spec.selector) with labels in deployment
+kubectl -n kube-system get svc aws-load-balancer-webhook-service -o yaml
+kubectl -n kube-system get deployment aws-load-balancer-controller -o yaml
+
+**Webhook port:9443 is where ALB listens to the traffic
+
+- Check logs
+kubectl get pods -n kube-system   # Get the pod name starting with aws-load-bal...
+kubectl get logs -n kube-system -f aws-load-balancer-controller-xxxxxx   
+
+- Uninstall 
+helm uninstall aws-load-balancer-controller -n kube-system
+
+46.K8S Ingress Class
+https://kubernetes.io/docs/concepts/service-networking/ingress-controllers/
+It is used to inform which ingress controller to use
+ingress_class.yml
+apiVersion: networking.k8s.io/v1
+kind: IngressClass
+metadata: 
+  name: my-ingress-class 
+  annotations:
+    ingressclass.kubernetes.io/is-default-class: "true"
+spec:
+  controller: ingress.k8s.aws/alb 
+
+47.Connection between Ingress Class and Ingress Resource
+If Ingress Class yaml does not have the annotations: is-default-class: "true", then in the Ingress Resource we need to specify spec.ingressClassName: my-ingress-class, to clearly specify that we want to associate the controller provided in Ingress Class yml. Otherwise, this class is default class.
+
+48.Key components of Ingress Manifest
+- Ingress Annotations: Load Balancer Settings 
+(kubernetes-sigs.github.io/aws-load-balancer-controller/v2.3/guide/ingress/annotations/#annotations)
+- Ingress spec Ingress Class name: Which Ingress controller to use
+- Ingress spec: Ingress Routing Rules and Default backend
+
+1)Users-->ALB Service(Ingress)-->Default Backend -->NodePort Service -->Pod
+2)For Path /*
+Users-->ALB Service(Ingress)-->Route for / -->NodePort Service -->Pod
+
+48.1.Default Backend - two yamls
+Yaml 1 - Deployment and Service
+Create deployment with 1 pod label:machine=app1
+---
+Create Nodeport Service with label selector machine=app1
+Yaml 2 - Ingress
+Ingress Annotations: 
+alb.ingress.kubernetes.io/load-balancer-name: app1ingress
+alb.ingress.kubernetes.io/scheme: internet-facing
+alb.ingress.kubernetes.io/healthcheck-protocol: HTTP
+alb.ingress.kubernetes.io/healthcheck-port: '80'
+alb.ingress.kubernetes.io/healthcheck-path: /app1/index.html
+alb.ingress.kubernetes.io/healthcheck-interval-seconds: 10
+alb.ingress.kubernetes.io/healthcheck-timeout-seconds: 10
+alb.ingress.kubernetes.io/success-codes: '200'
+alb.ingress.kubernetes.io/healthy-threshold-count: '2'
+alb.ingress.kubernetes.io/unhealthy-threshold-count: '2'
+
+In case, we have multiple applications, we need to move Annotations section to Service yaml
+
+spec.IngressClassName:
+spec.defaultBackend.service.name:
+
+service must be of type Nodeport or loadbalancer to use Instance mode
+
+48.2 Ingress Path Types defined in Ingress
+- ImplementationSpecific - Depends on IngressClass
+- Exact - Match the URL
+- Prefix - Matches after /
+
+- Describe Paths in Ingress where each path has a backend Nodeport service
+- Use /* or root path at the end of paths or define a default backend
+
+49.Generate a wildcard certificate for a domain name
+AWS Certificate Manager -> Request -> Request a public certificate -> *.stacksimplify.com -> DNS Validation Method -> Create Records in Route 53
+	
+49.Addition to ALBC Ingress to include SSL
+alb.ingress.kubernetes.io/listen-ports: '[{"HTTPS":443}, {"HTTP":80}]'
+    alb.ingress.kubernetes.io/certificate-arn: <<certificate arn>>
+
+50.Addition to ALBC Ingress to perform SSL Redirect from HTTP to HTTPS
+alb.ingress.kubernetes.io/actions.ssl-redirect: '{"Type": "redirect", "RedirectConfig": { "Protocol": "HTTPS", "Port": "443", "StatusCode": "HTTP_301"}}'   
+
+51.What is external DNS
+https://github.com/stacksimplify/aws-eks-kubernetes-masterclass/tree/master/08-NEW-ELB-Application-LoadBalancers/08-06-Deploy-ExternalDNS-on-EKS
+- Used for Updating Route53 RecordSets from Kubernetes
+- We need to create IAM Policy, k8s Service Account & IAM Role and associate them together for external-dns pod to add or remove entries in AWS Route53 Hosted Zones.
+- Update External-DNS default manifest to support our needs
+
+52.IAM Policy for External DNS
+Policy Name: AllowExternalDNSPolicy
+ALLOW: route53:ChangeResourceRecordSets on arn:aws:route53:::hostedzone/*
+ALLOW: "route53:ListHostedZones","route53:ListResourceRecordSets" on all "*"
+
+53.Create Service Account
+eksctl create iamserviceaccount \
+    --name external-dns \
+    --namespace default \
+    --cluster eksdemo1 \
+    --attach-policy-arn IAM_policy_ARN \
+    --approve \
+    --override-existing-serviceaccounts
+
+54.Verify external-dns service account
+kubectl get sa external-dns
+
+kubectl describe sa external-dns
+Observation: Verify the Annotations and you should see the IAM Role is present on the Service Account
+Go to Services -> CloudFormation -> Check for Stack
+eksctl get iamserviceaccount --cluster eksdemo1	
+
+55.Set external-dns Service Account with the Role ARN
+ https://github.com/kubernetes-sigs/external-dns/blob/master/docs/tutorials/aws.md
+kube-manifests/01-Deploy-ExternalDNS.yml
+eks.amazonaws.com/role-arn: <Role>
+Rest follow the instructions for https://github.com/stacksimplify/aws-eks-kubernetes-masterclass/tree/master/08-NEW-ELB-Application-LoadBalancers/08-06-Deploy-ExternalDNS-on-EKS
+
+56.External DNS for K8S Service of type Loadbalancer
+annotations:
+    external-dns.alpha.kubernetes.io/hostname: externaldns-k8s-service-demo101.stacksimplify.com
+The value you put here will be created as DNS Record
+
+57.Host Header/Name based Ingress
+ Annotations:
+    external-dns.alpha.kubernetes.io/hostname: default101.stacksimplify.com
+ spec:
+  defaultBackend:
+    service:
+      name: app3-nginx-nodeport-service
+ spec.rules:
+         - host: app101.stacksimplify.com 
+		path: /
+
+	 - host: app201.stacksimplify.com
+ 		path: /
+It will add three records in Route53
+
+
+
+	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,357 @@
+https://developer.hashicorp.com/terraform/intro
+https://developer.hashicorp.com/terraform/tutorials/aws-get-started/install-cli
+
+https://github.com/stacksimplify/hashicorp-certified-terraform-associate
+https://github.com/stacksimplify/terraform-cloud-demo1
+https://github.com/stacksimplify/terraform-aws-s3-website
+https://github.com/stacksimplify/terraform-sentinel-policies
+https://github.com/stacksimplify/hashicorp-certified-terraform-associate/blob/main/presentation/Hashicorp-Certified-Terraform-Associate-v3.pptx
+https://github.com/stacksimplify/terraform-on-aws-ec2
+
+https://github.com/zealvora/terraform-beginner-to-advanced-resource
+
+https://registry.terraform.io/providers/hashicorp/aws/latest/docs
+
+https://github.com/linuxacademy/content-hashicorp-certified-terraform-associate-foundations.git
+
+
+GIT TOKEN: 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
+git clone https://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@github.com/sanjitgrover/terra-basic.git
+git clone https://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@github.com/sanjitgrover/terra-exam-prep.git
+
+git clone https://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@github.com/sanjitgrover/eks-with-terraform.git
+
+
+
+Check aws credentials
+cat $HOME/.aws/credentials
+
+CENTOS/RHEL/AMAZON LINUX Installation
+sudo yum install -y yum-utils
+
+sudo yum-config-manager --add-repo https://rpm.releases.hashicorp.com/RHEL/hashicorp.repo
+
+sudo yum -y install terraform
+
+Setup Autocompletion
+touch ~/.bashrc
+terraform -install-autocomplete
+Restart shell
+
+
+Practice Terraform
+git clone https://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@github.com/sanjitgrover/terraform-up-and-running.git 
+
+STEPS FOR SETUP TERRAFORM DEVELOPMENT ENVIRONMENT ON CLOUD9 (ACLOUDGURU)----******----
+1.Setup and import terraform-key.pem from git repo to Key-pairs at EC2 Dashboard using the following commands:
+chmod 400
+ssh-keygen -y -f terraform-key.pem
+
+2.Copy AWS secret id and key from acloudguru dashboard aws startup to the cloud9 terminal using aws configure as Cloud9 credentials are temporary and setting up IAM roles, users is not working with them
+
+----******----
+
+
+
+1.List all tf commands
+terraform
+
+2.Check version
+terraform version
+
+3.If you want to run terraform in a folder other than your config files
+terraform -chdir=path_to/tf <command>
+
+4.initialize the working directory where your tf files are
+terraform init
+
+4.1.Intitialize to latest version acc. to PROVIDERS section, for an already deployed configuration
+terraform init -upgrade
+
+5.Dry run for your configurations
+terraform plan
+
+terraform plan -out <planfile>   	- prints the plan
+terraform plan -destroy 	- outputs the destroy plan
+
+6.Execute your configuration
+terraform apply
+terraform apply <plan> 		- Apply a specific plan
+terraform apply -target=resource	- Apply changes to a resource in the infrastructure
+terraform apply -var my_variable=variable 	- Pass a variable from comd line
+use --auto-approve to avoid prompt
+
+7.Delete the infrastructure built using apply
+terraform destroy
+
+8.List all the Providers used in configuration
+terraform providers
+
+9.
+resource "<PROVIDER>_<TYPE>" "<NAME>" {   //provider=aws, type=resource type
+  [CONFIG ...]		//config for the resource type
+}
+
+provider "aws" {
+    region = "us-east-1"
+}
+
+resource "aws_instance" "example"{
+    ami="ami-0fb653ca2d3203ac1"
+    instance_type="t2.micro"
+}
+
+10.Expression - Returns some value
+Resource Attribute Reference - type of expression that uses value of another resource
+<PROVIDER>_<TYPE>.<NAME>.<ATTRIBUTE>
+
+To reference to security group id
+aws_security_group.instance.id
+
+11.Show dependencies between resources
+terraform graph
+
+12.What is Terraform Workflow
+init -> validate -> plan -> apply -> destroy
+
+13.terraform standard template
+<Block Type> "<Block Label>" "<Block Label>" {
+
+	<Identifier>=<Expression>
+}
+
+resource  "aws_instance" "ec2demo" {	
+	ami='ami-addsk3wder'
+	instance_type='t2.medium'
+}
+
+14.Toplevel Blocks in Terraform
+- Fundamental blocks
+	Terraform Block
+	Provider Block
+	Resource Block
+- Variable blocks
+	Input Variables Block
+	Output values Block
+	Local variables Block
+- Calling/Referencing blocks
+	Data Source Block
+	Modules Block 
+
+15.Terraform Block
+ - Configurations
+ - Required Terraform Version
+ - Provider Requirements   -  (similar to package.json)
+ - Configure Terraform State or Backend
+
+16.Provider Block
+ - Interact with Remote Cloud Systems
+ - Declare providers to install & use them
+ - Provider configurations belong to Root module
+
+17.Resource Block
+ - Infrastructure 
+
+18.Providers:
+ - Provider Requirements in Terraform Block
+ - Provider Configuration in Provider Block
+ - .terraform.lock.hcl file -- provider version related information(similar to packagelock.json). It gets created when - terraform init command is run.
+If lock file is not found, provider latest version or version constraint is downloaded. 
+ 
+
+19.terraform.tfstate
+Configuration file containing resources created at cloud provider. It gets created when -terraform apply command is run.
+
+20.What should be destroyed
+terraform destroy -auto-approve 
+to destroy resources
+Other than that 
+rm -rf .terraform*
+rm -rf .terraform.tfstate*
+
+21.Resource syntax
+resource 	"aws_vpc"	"vpc_us_west_!"{
+		|-resource type||-resource name|
+	provider = 	aws
+	|-meta arguments -|	
+	cidr_block = 0.0.0.0/16
+	tags={
+		"Name" = "my_vpc"
+	     }
+	|- Resource Argument   -|
+}
+
+22.Resource Behavior tied to terraform state file
+-Create Resource
+-Destroy Resource
+-Update in place	.e.g. Tag change
+-Delete and create
+
+22.1.
+Desired State - *.tf files
+Current State - Current Resource state in AWS
+
+23.terraform fmt
+It formats the terraform files acc. to tf standards
+
+24.What does .terraform.tfstate file contains a tf database for your created resources - 
+version, output, resources information	
+
+25.What are resource meta arguments
+- depends_on 	- module dependencies
+- count		- create resources as per the count
+- for_each 	- map or list to create resources
+- provider 	- select non-default provider configuration
+- lifecycle 	- 
+- provisioners & connections
+
+25.Usage of Output variables
+- Show attributes of created resources on CLI
+- Child module can expose its attributes to a parent module
+- In Remote state usage, root module outputs can be used by other configurations via terraform_remote_state data source
+
+26.Requirements for Public VPC
+1)Create VPC  with CIDR - 10.0.0.0/16
+2)Create subnet within this VPC with CIDR - 10.0.1.0/24
+3)Create Internet Gateway 
+4)Create Route Table 
+5.a)Create Route in Route Table for Internet Gateway 
+5.b)Associate Route with Subnet
+6)Create Security Group i.e. Ports HTTP-80 and SSH-22 for accessing this subnet
+7)Create EC2 Instance in the subnet
+8)Create Elastic IP in the VPC
+
+27.What are the various ways to set variables
+- variable block
+- using -var with plan and apply
+- using environment variables   
+	WIN: setx TF_VAR_instancetype m5.large
+- using terraform.tfvars file
+- using -var-file <varfilename>.tfvars with plan and apply
+- using auto.tfvars
+
+27.Enter variable value from commandline
+terraform plan -var "machinename=DS_MACHINE" -var"next=NEXTVAR"
+
+28.Set default value for variable in variable block
+variable machinename {
+	default="DE_MACHINE"
+	type = string
+}
+
+29.map 
+variable "machine"{
+	type=map
+	default={
+       #	<-key->  = <-value->
+		machine1 = "DE"
+		machine2 = "DS"
+		}
+}
+
+output "current_machine"{
+	value="Current Machine is ${lookup(var.machine, "machine1")}"
+}
+This will print the contents of file in the current module
+output "file_value"{
+	value=file("${path.module}/file.txt")
+}
+30.Default File containing variables - terraform.tfvars
+machine1 = "DE"
+machine2 = "DS"
+
+31.Custom file containing variables
+terraform plan -var-file=development.tfvars
+
+32.Use environment variable as tf variable
+export TF_vAR_machinename=DE_MACHINE
+
+33.
+terraform output <blockname>
+
+34.Console on current configuration
+terraform console
+var.machinename
+
+35.Generate key value pair
+ssh-keygen -t rsa
+> ./id_rsa
+
+Two files will be created - id_rsa, id_rsa.pub
+use id_rsa.pub while creating AWS instance
+
+36.dynamic resourcename{
+	for_each=[22,80,443,3306,8080]
+	iterator=port
+	content{
+	 	--
+		--
+		port=port.value
+	}
+}
+		
+
+37.Terraform Cloud vs Terraform Enterprise
+TCloud available as a hosted service at https://app.terraform.io
+
+38.Terraform Cloud VCS - Version Control System
+VCS providers are  - Github, Bitbucket, Gitlab
+
+39.Set Logs level using terraform env variable - TF_LOG
+export TF_LOG=TRACE
+
+40.Save Logs to a file using terraform env variable - TF_LOG_PATH
+export TF_LOG_PATH=/tmp/terra-crash.log
+
+41.Use of for_each
+ variable "port_list" {
+      default=["8080", "8081", "8089"]
+ }
+
+dynamic "ingress"{
+for_each = var.port_list
+iterator = port
+content{
+	from_port = port.value
+	to_port = port.value
+	protocol = "tcp"
+	cidr_blocks = ["0.0.0.0/0"]
+}
+
+42.Avoid Refresh of complete State file at terrform plan
+terraform plan -refresh=false
+
+43.Selected Refresh of aws resource
+terraform plan -refresh=false -target=aws_resource.resource_name
+
+44.Provisioner Blocks
+- local-exec
+- remote-exec
+
+
+45.If a provisioner doesnt work, resource is created but it is tainted
+- to avoid tainting the resource, use on_failure=continue, rather than on_failure=fail
+
+46.Execution time of provisioners
+- creation
+- destroy
+
+47.
+
+	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
