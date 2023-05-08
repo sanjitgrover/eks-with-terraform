@@ -33,7 +33,7 @@ git clone https://github.com/ACloudGuru-Resources/Course_EKS-Basics
 https://github.com/ACloudGuru-Resources/Course_Practical_Guide_EKS
 
 Sanjit's EKS Repo
-git clone https://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@github.com/sanjitgrover/eks-with-terraform.git
+git clone https://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@github.com/sanjitgrover/eks-with-terraform.git
 
 
 
